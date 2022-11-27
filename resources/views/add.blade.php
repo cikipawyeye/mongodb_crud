@@ -2,6 +2,15 @@
 
 @section('content')
     <h3 class="mb-3">Add a book</h3>
+
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <div class="alert alert-danger" role="alert">
+                {{ $error }}
+            </div>
+        @endforeach
+    @endif
+
     <form action="/book" method="POST">
         @csrf
 

@@ -20,6 +20,24 @@ class BookController extends Controller
     }
 
     /**
+     * Displays search results for the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function search($params)
+    {
+        if ($params == "" | $params == null) {
+            return redirect('/book');
+        } else {
+            return view('home', [
+                'books' => Book::where('title', 'like', "%$params%")->orWhere('writer', 'like', "%$params%")->get(),
+                'search' => $params
+            ]);
+        }
+
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -37,15 +55,26 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'writer' => 'required|max:255',
+            'publisher' => 'required|max:255',
+            'year' => 'required|numeric|digits:4',
+        ]);
+
         $book = new Book;
         
-        $slug = $request->title . '-' . $request->writer . '-' . 
-        $request->publisher . '-' . $request->year;
+        $slug = $validatedData['title'] . '-' . $validatedData['writer'] . '-' . 
+        $validatedData['publisher'] . '-' . $validatedData['year'];
 
-        $book->title = $request->title;
-        $book->writer = $request->writer;
-        $book->publisher = $request->publisher;
-        $book->year = $request->year;
+        $slug = rtrim($slug, "/");
+        $slug = filter_var($slug, FILTER_SANITIZE_URL);
+        $slug = str_replace(['?', '/', '&', '*', '#', '.', '[', ']', '{', '}', '+', '=', '@'], '', strtolower($slug));
+
+        $book->title = $validatedData['title'];
+        $book->writer = $validatedData['writer'];
+        $book->publisher = $validatedData['publisher'];
+        $book->year = $validatedData['year'];
         $book->slug = str_replace(' ', '-', strtolower($slug));
 
         $book->save();
@@ -86,17 +115,24 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $slug = $request->title . '-' . $request->writer . '-' . 
-        $request->publisher . '-' . $request->year;
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'writer' => 'required|max:255',
+            'publisher' => 'required|max:255',
+            'year' => 'required|numeric|digits:4',
+        ]);
+
+        $slug = $validatedData['title'] . '-' . $validatedData['writer'] . '-' . 
+        $validatedData['publisher'] . '-' . $validatedData['year'];
 
         $slug = rtrim($slug, "/");
         $slug = filter_var($slug, FILTER_SANITIZE_URL);
         $slug = str_replace(['?', '/', '&', '*', '#', '.', '[', ']', '{', '}', '+', '=', '@'], '', strtolower($slug));
 
-        $book->title = $request->title;
-        $book->writer = $request->writer;
-        $book->publisher = $request->publisher;
-        $book->year = $request->year;
+        $book->title = $validatedData['title'];
+        $book->writer = $validatedData['writer'];
+        $book->publisher = $validatedData['publisher'];
+        $book->year = $validatedData['year'];
         $book->slug = str_replace(' ', '-', $slug);
         $book->save();
 

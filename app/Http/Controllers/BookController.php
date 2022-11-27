@@ -14,7 +14,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        return view('home', [
+        return view('book/index', [
             'books' => Book::all()
         ]);
     }
@@ -29,7 +29,7 @@ class BookController extends Controller
         if ($params == "" | $params == null) {
             return redirect('/book');
         } else {
-            return view('home', [
+            return view('book/index', [
                 'books' => Book::where('title', 'like', "%$params%")->orWhere('writer', 'like', "%$params%")->get(),
                 'search' => $params
             ]);
@@ -44,7 +44,7 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('add');
+        return view('book/add');
     }
 
     /**
@@ -90,7 +90,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        return view('book', [
+        return view('book/show', [
             'book' => Book::where('slug', '=', $book->slug)->first()
         ]);
     }
@@ -103,7 +103,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        return view('edit', ['book' => $book]);
+        return view('book/edit', ['book' => $book]);
     }
 
     /**

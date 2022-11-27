@@ -2,6 +2,13 @@
 
 @section('content')
     <h3 class="mb-3">Edit a book: {{ $book->title }}</h3>
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <div class="alert alert-danger" role="alert">
+                {{ $error }}
+            </div>
+        @endforeach
+    @endif
     <form action="/book/{{ $book->slug }}" method="post">
         @method('put')
         @csrf

@@ -8,11 +8,19 @@
     @endif
 
     <div class="row mb-2">
-        <div class="col-md-10">
+        <div class="col-md-4">
             <h3 class="mb-3">List of Books</h3>
         </div>
-        <div class="col-md-2 d-flex justify-content-end">
-            <a href="/book/create"><button class="btn btn-primary">Add Data</button> </a>
+        <div class="col-md-4 d-flex justify-content-center">
+            <div class="input-group mb-3">
+                <input value="{{ $search ?? '' }}" type="text" class="form-control" placeholder="Search books"
+                    id="input-search">
+                <a href="" class="btn btn-outline-secondary" onclick="setSearchUrl(this)"><i
+                        class="bi-search"></i></a>
+            </div>
+        </div>
+        <div class="col-md-4 d-flex justify-content-end">
+            <a href="/book/create"><button class="btn btn-primary">Add Book</button></a>
         </div>
     </div>
 
@@ -37,7 +45,8 @@
                         <td>{{ $book->publisher }}</td>
                         <td>{{ $book->year }}</td>
                         <td>
-                            <a href="/book/{{ $book->slug }}/edit"><span class="fs-6 badge text-bg-light border border-1"><i
+                            <a href="/book/{{ $book->slug }}/edit"><span
+                                    class="fs-6 badge text-bg-light border border-1"><i
                                         class="bi-pencil-square"></i></span></a>
                             {{-- triger modal --}}
                             <a href="#" id="btn-delete" slug="{{ $book->slug }}" title="{{ $book->title }}"
@@ -95,4 +104,17 @@
     @else
         <h3 class="text-center">No data found!</h3>
     @endif
+
+    <script type="text/javascript">
+        function setSearchUrl(e) {
+            let search = document.getElementById('input-search').value;
+            console.log(search)
+            if (search == "" || search == null) {
+                e.href = "/book";
+            } else {
+                e.href = "/search/book/" + search;
+            }
+            // alert(search)
+        }
+    </script>
 @endsection

@@ -39,3 +39,10 @@ Route::get('/', function () {
 // });
 
 Route::resource('book', BookController::class);
+
+Route::get('/search/book/{params}', [BookController::class, 'search']);
+
+// Route::get('/search/book', [BookController::class, 'index']);
+Route::get('/search/book', function() {
+    return redirect('/book');
+});
